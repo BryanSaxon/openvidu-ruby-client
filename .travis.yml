@@ -12,4 +12,4 @@ services:
 
 before_install:
   - docker pull openvidu/openvidu-server-kms
-  - docker run -p 127.0.0.1:80:4443 -d --rm -e openvidu.secret=MY_SECRET openvidu/openvidu-server-kms
+  - docker run -p 4443:4443 -d --rm -e openvidu.secret=MY_SECRET openvidu/openvidu-server-kms
