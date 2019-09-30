@@ -6,5 +6,9 @@ module OpenVidu
     def test_that_it_works
       assert true
     end
+
+    def test_travis_ci
+      assert true
+    end
   end
 end
