@@ -17,7 +17,7 @@ module OpenVidu
             method,
             "#{ENV['OPENVIDU_URL']}/#{endpoint}",
             headers: { Authorization: "Basic #{auth}" },
-            # verify: false,
+            verify: false,
             query: options[:query],
             body: options[:body]
           )&.parsed_response
