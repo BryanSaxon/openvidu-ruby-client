@@ -1,3 +1,4 @@
+require 'dotenv/load'
 require 'httparty'
 
 module OpenVidu
@@ -14,7 +15,7 @@ module OpenVidu
         OpenStruct.new(
           HTTParty.send(
             method,
-            "#{OPENVIDU_URL}/#{endpoint}",
+            "#{ENV['OPENVIDU_URL']}/#{endpoint}",
             headers: { Authorization: "Basic #{auth}" },
             verify: false,
             query: options[:query],
@@ -24,7 +25,9 @@ module OpenVidu
       end
 
       def auth
-        Base64.strict_encode64("#{OPENVIDU_USERNAME}:#{OPENVIDU_PASSWORD}")
+        Base64.strict_encode64(
+          "#{ENV['OPENVIDU_USERNAME']}:#{ENV['OPENVIDU_PASSWORD']}"
+        )
       end
     end
   end

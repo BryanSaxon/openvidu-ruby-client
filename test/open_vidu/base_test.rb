@@ -3,12 +3,11 @@ require 'test_helper'
 module OpenVidu
   # BaseTest
   class BaseTest < Minitest::Test
-    def test_that_it_works
-      assert true
-    end
+    def test_config
+      response = OpenVidu::Base.config
 
-    def test_travis_ci
-      assert true
+      refute response.nil?
+      assert defined?(response.version)
     end
   end
 end
