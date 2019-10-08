@@ -1,6 +1,4 @@
 require 'test_helper'
-require 'securerandom'
-require 'byebug'
 
 module OpenVidu
   # SessionTest
@@ -9,19 +7,32 @@ module OpenVidu
       response = OpenVidu::Session.all
 
       refute response.nil?
-      assert defined?(response.numberOfElements)
+      assert response.is_a?(Array)
+      assert response.first.is_a?(OpenVidu::Session)
     end
 
     def test_create
       id = SecureRandom.hex(5)
       params = create_params(customSessionId: id)
+      response = OpenVidu::Session.create(params)
+
+      refute response.nil?
+      refute response&.sessionId&.nil?
+      assert response.sessionId.eql?(id)
+
+      OpenVidu::Session.find(id).delete
+    end
+
+    def test_instance_create
+      id = SecureRandom.hex(5)
+      params = create_params(customSessionId: id)
       response = OpenVidu::Session.new(params).create
 
       refute response.nil?
-      refute response&.id&.nil?
-      assert response.id.eql?(id)
+      refute response&.sessionId&.nil?
+      assert response.sessionId.eql?(id)
 
-      OpenVidu::Session.new(sessionId: id).delete
+      OpenVidu::Session.find(id).delete
     end
 
     def test_find
@@ -33,15 +44,15 @@ module OpenVidu
       refute response&.sessionId&.nil?
       assert response.sessionId.eql?(id)
 
-      OpenVidu::Session.new(sessionId: id).delete
+      OpenVidu::Session.find(id).delete
     end
 
     def test_delete
       id = SecureRandom.hex(5)
       OpenVidu::Session.new(create_params(customSessionId: id)).create
-      response = OpenVidu::Session.new(sessionId: id).delete
+      response = OpenVidu::Session.find(id).delete
 
-      refute response.nil?
+      assert response.eql?(true)
     end
 
     private

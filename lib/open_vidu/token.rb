@@ -1,30 +1,18 @@
 module OpenVidu
   # Token
   class Token < Base
-    attr_reader :session, :role, :data, :kurento_options
+    ASSIGNABLE_PARAMS = %w[session role data kurentoOptions].freeze
+    GENERATED_PARAMS = %w[id token].freeze
+    ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
-    def initialize(params)
-      @session = params[:session]
-      @role = params[:role] || ''
-      @data = params[:data] || {}
-      @kurento_options = params[:kurento_options] || {}
+    def self.create(params)
+      new(params).create
     end
 
     def create
-      # TODO: Raise error if nil session.
-      # TODO: Raise error unless role is SUBSCRIBER, PUBLISHER, or MODERATOR.
-      self.class.request(:post, 'api/tokens', body: body)
-    end
-
-    private
-
-    def body
-      {
-        session: session,
-        role: role,
-        data: data,
-        kurentoOptions: kurento_options
-      }
+      OpenVidu::Command.new(
+        :token, :post, 'api/tokens', create_params
+      ).execute
     end
   end
 end

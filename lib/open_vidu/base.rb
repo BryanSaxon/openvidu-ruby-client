@@ -1,68 +1,25 @@
-require 'dotenv/load'
-require 'httparty'
-require 'json'
-require 'byebug'
+require 'open_vidu/command'
 
 module OpenVidu
   # Base
   class Base
-    class << self
-      def request(method, endpoint, options = { query: nil, body: nil })
-        response = HTTParty.send(
-          method,
-          "#{base_url}/#{endpoint}",
-          headers: headers,
-          verify: ENV['MODE'] != 'DEV',
-          query: options[:query],
-          body: options[:body].to_json
-        )
+    ASSIGNABLE_PARAMS = %w[].freeze
+    GENERATED_PARAMS = %w[].freeze
+    ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
-        # TODO: Improve error handling.
-        raise StandardError, 'Error connecting' unless response.success?
-
-        formatted_response(response.parsed_response)
-      rescue StandardError => e
-        e.message
+    def initialize(params = {})
+      self.class::ALL_PARAMS.each do |param|
+        instance_variable_set("@#{param}", params[param.to_sym])
+        self.class.send(:attr_accessor, param.to_sym)
       end
+    end
 
-      def config
-        request(:get, 'config')
-      end
-
-      private
-
-      def base_url
-        ENV['OPENVIDU_URL']
-      end
-
-      def headers
-        {
-          'Authorization' => "Basic #{auth}",
-          'Content-Type' => 'application/json'
-        }
-
-      end
-
-      def auth
-        Base64.strict_encode64("#{username}:#{password}")
-      end
-
-      def username
-        ENV['OPENVIDU_USERNAME']
-      end
-
-      def password
-        ENV['OPENVIDU_PASSWORD']
-      end
-
-      def formatted_response(response)
-        # TODO: Convert response keys to snakecase.
-        return OpenStruct.new(response) unless response.is_a?(Array)
-
-        response.map do |object|
-          OpenStruct.new(object)
+    def create_params
+      Hash[
+        self.class::ASSIGNABLE_PARAMS.map do |param|
+          [param, instance_variable_get("@#{param}")]
         end
-      end
+      ]
     end
   end
 end
