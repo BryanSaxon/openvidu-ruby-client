@@ -17,10 +17,7 @@ module OpenVidu
       return klass.new(mapped_params(response)) if complete_record?
       return klass.find(response['id']) if record_lookup?
 
-      # Else return collection mapping.
-      response['content'].map do |hash|
-        klass.new(mapped_params(hash))
-      end
+      response['content'].map { |hash| klass.new(mapped_params(hash)) }
     end
 
     private

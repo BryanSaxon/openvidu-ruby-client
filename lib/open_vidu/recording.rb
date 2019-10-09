@@ -38,7 +38,7 @@ module OpenVidu
 
     def create
       OpenVidu::Command.new(
-        :recording, :post, 'api/recordings/start'
+        :recording, :post, 'api/recordings/start', create_params
       ).execute
     end
 
