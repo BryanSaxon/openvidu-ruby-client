@@ -1,4 +1,3 @@
-require 'dotenv/load'
 require 'httparty'
 require 'json'
 
@@ -9,7 +8,7 @@ module OpenVidu
 
     BASE_URL = ENV['OPENVIDU_URL']
     TOKEN = "#{ENV['OPENVIDU_USERNAME']}:#{ENV['OPENVIDU_PASSWORD']}".freeze
-    MODE = ENV['MODE']
+    VERIFY_PEER = ENV['OPENVIDU_VERIFY_PEER']
 
     def initialize(method, endpoint, params = {})
       @method = method
@@ -33,7 +32,7 @@ module OpenVidu
           'Authorization' => "Basic #{Base64.strict_encode64(TOKEN)}",
           'Content-Type' => 'application/json'
         },
-        verify: MODE != 'DEV',
+        verify: VERIFY_PEER != 'false',
         body: params.to_json
       }
     end
