@@ -26,6 +26,14 @@ module OpenVidu
       ).execute
     end
 
+    def stop
+      OpenVidu::Command.new(
+        :recording,
+        :post,
+        "api/recordings/stop/#{id}"
+      ).execute
+    end
+
     def delete
       OpenVidu::Command.new(
         :recording,
