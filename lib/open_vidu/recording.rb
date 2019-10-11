@@ -38,11 +38,9 @@ module OpenVidu
       OpenVidu::Command.new(
         :recording,
         :delete,
-        "api/recordings/stop/#{id}"
+        "api/recordings/#{id}"
       ).execute
     end
-
-    alias_method :stop, :delete
 
     def create
       OpenVidu::Command.new(
