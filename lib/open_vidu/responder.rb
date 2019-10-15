@@ -1,5 +1,3 @@
-require 'byebug'
-
 module OpenVidu
   # Responder
   class Responder
