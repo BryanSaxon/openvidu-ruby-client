@@ -7,6 +7,9 @@ rvm: 2.4.5
 services:
   - docker
 
+env:
+  OPENVIDU_VERIFY_PEER: false
+
 before_install:
   - gem install bundler -v 1.17.3
   - docker pull openvidu/openvidu-server-kms
