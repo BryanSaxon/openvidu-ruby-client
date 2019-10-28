@@ -7,6 +7,10 @@ module OpenVidu
     GENERATED_PARAMS = %w[].freeze
     ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
+    def self.content_key
+      'content'
+    end
+
     def initialize(params = {})
       self.class::ALL_PARAMS.each do |param|
         instance_variable_set("@#{param}", params[param.to_sym])

@@ -4,6 +4,9 @@ module OpenVidu
   # SessionTest
   class SessionTest < Minitest::Test
     def test_all
+      id = SecureRandom.hex(5)
+      params = create_params(customSessionId: id)
+      OpenVidu::Session.create(params)
       response = OpenVidu::Session.all
 
       refute response.nil?
