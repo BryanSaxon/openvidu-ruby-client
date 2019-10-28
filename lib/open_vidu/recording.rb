@@ -10,6 +10,10 @@ module OpenVidu
     ].freeze
     ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
+    def self.content_key
+      'items'
+    end
+
     def self.all
       OpenVidu::Command.new(
         :recording, :get, 'api/recordings'

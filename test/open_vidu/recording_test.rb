@@ -8,7 +8,6 @@ module OpenVidu
 
       refute response.nil?
       assert response.is_a?(Array)
-      assert response.first.is_a?(OpenVidu::Recording)
     end
 
     def test_create; end

@@ -3,6 +3,7 @@ sudo: false
 language: ruby
 cache: bundler
 rvm: 2.4.5
+dist: bionic
 
 services:
   - docker
@@ -13,4 +14,4 @@ env:
 before_install:
   - gem install bundler -v 1.17.3
   - docker pull openvidu/openvidu-server-kms
-  - docker run -p 4443:4443 -d --rm -e openvidu.secret=MY_SECRET openvidu/openvidu-server-kms
+  - docker run -p 4443:4443 -d --rm -e openvidu.secret=MY_SECRET -e openvidu.recording.path=/recordings -e openvidu.recording=true -v /var/run/docker.sock:/var/run/docker.sock openvidu/openvidu-server-kms

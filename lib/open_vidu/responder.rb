@@ -9,16 +9,22 @@ module OpenVidu
     end
 
     def execute
-      klass = Object.const_get(klass_name)
-
       return true if record_destroyed?
       return klass.new(mapped_params(response)) if complete_record?
       return klass.find(response['id']) if record_lookup?
 
-      response['content'].map { |hash| klass.new(mapped_params(hash)) }
+      response[content_key].map { |hash| klass.new(mapped_params(hash)) }
     end
 
     private
+
+    def klass
+      Object.const_get(klass_name)
+    end
+
+    def content_key
+      klass.content_key
+    end
 
     def klass_name
       "OpenVidu::#{object.to_s.split('_').map(&:capitalize).join('')}"
