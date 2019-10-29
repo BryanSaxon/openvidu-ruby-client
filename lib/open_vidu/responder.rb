@@ -9,6 +9,8 @@ module OpenVidu
     end
 
     def execute
+      klass = Object.const_get(klass_name)
+
       return true if record_destroyed?
       return klass.new(mapped_params(response)) if complete_record?
       return klass.find(response['id']) if record_lookup?

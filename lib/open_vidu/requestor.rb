@@ -17,7 +17,7 @@ module OpenVidu
     end
 
     def execute
-      HTTParty.send(method, url, options)&.parsed_response
+      HTTParty.send(method, url, options)
     end
 
     private
