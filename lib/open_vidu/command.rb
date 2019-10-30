@@ -1,5 +1,6 @@
 require 'open_vidu/requestor'
 require 'open_vidu/responder'
+require 'open_vidu/exceptions'
 
 module OpenVidu
   # Command
@@ -15,14 +16,14 @@ module OpenVidu
 
     def execute
       response = OpenVidu::Requestor.new(method, endpoint, params).execute
-      OpenVidu::Responder.new(object, response).execute if valid?(response)
+      raise OpenVidu::ResponseError.new(response) unless valid?(response)
+      OpenVidu::Responder.new(object, response.parsed_response).execute
     end
 
     private
 
-    # TODO: Implement.
     def valid?(response)
-      true
+      response.success?
     end
   end
 end

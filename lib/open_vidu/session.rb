@@ -24,6 +24,18 @@ module OpenVidu
       ).execute
     end
 
+    def self.exists?(id)
+      begin
+        OpenVidu::Command.new(
+            :session, :get, "api/sessions/#{id}"
+        ).execute
+        true
+      rescue OpenVidu::ResponseError => e
+        raise e unless e.response.code == 404
+        false
+      end
+    end
+
     def create
       OpenVidu::Command.new(
         :session, :post, 'api/sessions', create_params
