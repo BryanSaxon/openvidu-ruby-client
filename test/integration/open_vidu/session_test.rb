@@ -3,6 +3,14 @@ require 'test_helper'
 module OpenVidu
   # SessionTest
   class SessionTest < Minitest::Test
+    def setup
+      WebMock.disable!
+    end
+
+    def teardown
+      WebMock.enable!
+    end
+
     def test_all
       id = SecureRandom.hex(5)
       params = create_params(customSessionId: id)

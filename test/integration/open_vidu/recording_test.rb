@@ -3,6 +3,14 @@ require 'test_helper'
 module OpenVidu
   # RecordingTest
   class RecordingTest < Minitest::Test
+    def setup
+      WebMock.disable!
+    end
+
+    def teardown
+      WebMock.enable!
+    end
+
     def test_all
       response = OpenVidu::Recording.all
 

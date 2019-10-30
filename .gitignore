@@ -11,3 +11,5 @@
 /vendor/
 .DS_Store
 \.idea
+\.rakeTasks
+Gemfile.lock

@@ -10,6 +10,7 @@ require 'open_vidu/responder'
 require 'open_vidu/requestor'
 require 'open_vidu/session'
 require 'open_vidu/token'
+require 'webmock/minitest'
 
 require 'byebug'
 require 'minitest/autorun'

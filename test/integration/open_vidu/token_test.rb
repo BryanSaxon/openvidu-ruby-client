@@ -4,12 +4,14 @@ module OpenVidu
   # TokenTest
   class TokenTest < Minitest::Test
     def setup
+      WebMock.disable!
       @id = SecureRandom.hex(5)
       OpenVidu::Session.create(customSessionId: @id)
     end
 
     def teardown
       OpenVidu::Session.find(@id).delete
+      WebMock.enable!
     end
 
     def test_create
