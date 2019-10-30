@@ -17,8 +17,9 @@ module OpenVidu
       response = OpenVidu::Token.create(params)
 
       refute response.nil?
-      # refute response&.sessionId&.nil?
-      # assert response.sessionId.eql?(id)
+      assert response.session == @id
+      assert response.token.include?('wss')
+      assert response.role == 'PUBLISHER'
     end
 
     def test_instance_create
@@ -26,8 +27,9 @@ module OpenVidu
       response = OpenVidu::Token.new(params).create
 
       refute response.nil?
-      # refute response&.sessionId&.nil?
-      # assert response.sessionId.eql?(id)
+      assert response.session == @id
+      assert response.token.include?('wss')
+      assert response.role == 'PUBLISHER'
     end
 
     private
