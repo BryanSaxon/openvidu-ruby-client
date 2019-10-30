@@ -15,3 +15,4 @@ before_install:
   - gem install bundler -v 1.17.3
   - docker pull openvidu/openvidu-server-kms
   - docker run -p 4443:4443 -d --rm -e openvidu.secret=MY_SECRET -e openvidu.recording.path=/recordings -e openvidu.recording=true -v /var/run/docker.sock:/var/run/docker.sock openvidu/openvidu-server-kms
+  - while [[ "$(curl -k -uOPENVIDUAPP:MY_SECRET -s -o /dev/null -w ''%{http_code}'' https://localhost:4443)" != "200" ]]; do echo "Waiting for Openvidu..."; sleep 5; done
