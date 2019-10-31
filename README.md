@@ -20,12 +20,38 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+To get started locally, first pull the OpenVidu Docker image and start a container:
+
+```bash
+docker pull openvidu/openvidu-server-kms
+docker run -p 4443:4443 -d --rm -e openvidu.secret=MY_SECRET -e openvidu.recording.path=/recordings -e openvidu.recording=true -v /var/run/docker.sock:/var/run/docker.sock openvidu/openvidu-server-kms
+```
+
+Set the following environment variables in your Ruby application:
 
 ```bash
 OPENVIDU_URL = 'https://localhost:4443'
 OPENVIDU_USERNAME = 'OPENVIDUAPP'
 OPENVIDU_PASSWORD = 'MY_SECRET'
+OPENVIDU_VERIFY_PEER=false
+```
+
+To start a OpenVidu session:
+
+```ruby
+OpenVidu::Session.create(
+  customSessionId: 'your-custom-session-id',
+  defaultOutputMode: 'INDIVIDUAL',
+  recordingMode: 'ALWAYS')
+
+# Create a token to publish video
+token = OpenVidu::Token.create(session: 'your-custom-session-id,
+  role: "PUBLISHER",
+  data: {
+    "full_name": "John Smith"  # Custom data can be supplied here
+  }
+)
+
 ```
 
 ## Development
