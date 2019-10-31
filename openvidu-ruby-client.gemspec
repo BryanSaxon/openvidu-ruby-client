@@ -38,6 +38,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'test-unit', '~> 3.3', '>= 3.3.4'
   spec.add_development_dependency 'openssl', '>= 2.1.2' # Fix for Travis CI
   spec.add_development_dependency 'webmock', '~> 3.7'
+  spec.add_development_dependency 'simplecov', '~> 0.17'
 
   spec.add_development_dependency 'dotenv', '~> 2.7', '>= 2.7.5'
   spec.add_runtime_dependency 'httparty', '>= 0.13'
