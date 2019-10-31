@@ -1,73 +1,70 @@
 require 'test_helper'
 
-module OpenVidu
-  # SessionTest
-  class SessionTest < Minitest::Test
-    def test_all
-      id = SecureRandom.hex(5)
-      params = create_params(customSessionId: id)
-      OpenVidu::Session.create(params)
-      response = OpenVidu::Session.all
+class TestSession < Minitest::Test
+  def test_find
+    id = 'test_id'
+    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/sessions/#{id}")
+    OpenVidu::Session.find(id)
 
-      refute response.nil?
-      assert response.is_a?(Array)
-      assert response.first.is_a?(OpenVidu::Session)
-    end
+    assert_requested(:get, "#{ENV['OPENVIDU_URL']}/api/sessions/#{id}", times: 1)
+  end
 
-    def test_create
-      id = SecureRandom.hex(5)
-      params = create_params(customSessionId: id)
-      response = OpenVidu::Session.create(params)
+  def test_find_raises_on_404
+    id = 'test_id'
+    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/sessions/#{id}").to_return(status: 404)
+    assert_raises(OpenVidu::ResponseError) {
+      OpenVidu::Session.find(id)
+    }
 
-      refute response.nil?
-      refute response&.sessionId&.nil?
-      assert response.sessionId.eql?(id)
+    assert_requested(:get, "#{ENV['OPENVIDU_URL']}/api/sessions/#{id}", times: 1)
+  end
 
-      OpenVidu::Session.find(id).delete
-    end
+  def test_exists
+    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/sessions/test_id")
+    assert_equal(true, OpenVidu::Session.exists?("test_id"))
+  end
 
-    def test_instance_create
-      id = SecureRandom.hex(5)
-      params = create_params(customSessionId: id)
-      response = OpenVidu::Session.new(params).create
+  # exists? shoudln't raise on an ResponseError as long as the code is 404
+  def test_exists_ok_on_404
+    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/sessions/test_id").to_return(status: 404)
+    assert_equal(false, OpenVidu::Session.exists?("test_id"))
+  end
 
-      refute response.nil?
-      refute response&.sessionId&.nil?
-      assert response.sessionId.eql?(id)
+  def test_create
+    stub_request(:post, "#{ENV['OPENVIDU_URL']}/api/sessions")
+    OpenVidu::Session.new(create_params).create
+    OpenVidu::Session.create(create_params)
+    assert_requested(:post, "#{ENV['OPENVIDU_URL']}/api/sessions", times: 2, body: {
+        "mediaMode":"ROUTED",
+        "recordingMode":"MANUAL",
+        "customSessionId":"ID",
+        "defaultOutputMode":"COMPOSED",
+        "defaultRecordingLayout":"BEST_FIT",
+        "defaultCustomLayout":nil
+    }, headers: {
+        'Authorization'=>'Basic T1BFTlZJRFVBUFA6TVlfU0VDUkVU', 'Content-Type'=>'application/json'
+    })
+  end
 
-      OpenVidu::Session.find(id).delete
-    end
+  def test_delete
+    stub_request(:delete, "#{ENV['OPENVIDU_URL']}/api/sessions/ID")
+    s = OpenVidu::Session.new(create_params).delete
+    assert_requested(:delete, "#{ENV['OPENVIDU_URL']}/api/sessions/ID")
+  end
 
-    def test_find
-      id = SecureRandom.hex(5)
-      OpenVidu::Session.new(create_params(customSessionId: id)).create
-      response = OpenVidu::Session.find(id)
+  def test_get_all
+    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/sessions")
+    OpenVidu::Session.all
+    assert_requested(:get, "#{ENV['OPENVIDU_URL']}/api/sessions", times: 1)
+  end
 
-      refute response.nil?
-      refute response&.sessionId&.nil?
-      assert response.sessionId.eql?(id)
-
-      OpenVidu::Session.find(id).delete
-    end
-
-    def test_delete
-      id = SecureRandom.hex(5)
-      OpenVidu::Session.new(create_params(customSessionId: id)).create
-      response = OpenVidu::Session.find(id).delete
-
-      assert response.eql?(true)
-    end
-
-    private
-
-    def create_params(params = {})
-      {
+  def create_params(params = {})
+    {
         mediaMode: 'ROUTED',
         recordingMode: 'MANUAL',
         customSessionId: 'ID',
         defaultOutputMode: 'COMPOSED',
         defaultRecordingLayout: 'BEST_FIT'
-      }.merge(params)
-    end
+    }.merge(params)
   end
 end

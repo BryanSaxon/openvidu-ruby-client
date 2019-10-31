@@ -1,21 +1,12 @@
 require 'test_helper'
 
-module OpenVidu
-  # RequestorTest
-  class RequestorTest < Minitest::Test
-    def test_with_incorrect_url
-      # OpenVidu::Requestor.stub :base_url, 'https://example.com' do
-      #   response = OpenVidu::Config.config
-      #
-      #   refute response.nil?
-      #   assert response.eql?(
-      #     'Error connecting'
-      #   )
-      # end
-    end
-
-    def test_with_incorrect_username; end
-
-    def test_with_incorrect_password; end
+class TestRequestor < Minitest::Test
+  def test_execute
+    stub_request(:get, "https://localhost:4443/test")
+    r = OpenVidu::Requestor.new(:get, "test", {
+        'test_param' => 'A test'
+    })
+    r.execute
+    assert_requested(:get, "https://localhost:4443/test", times:1)
   end
 end

@@ -44,7 +44,7 @@ module OpenVidu
 
     def delete
       OpenVidu::Command.new(
-        :session, :delete, "api/sessions/#{sessionId}"
+        :session, :delete, "api/sessions/#{customSessionId}"
       ).execute
     end
   end

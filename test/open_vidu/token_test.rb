@@ -1,44 +1,30 @@
 require 'test_helper'
 
-module OpenVidu
-  # TokenTest
-  class TokenTest < Minitest::Test
-    def setup
-      @id = SecureRandom.hex(5)
-      OpenVidu::Session.create(customSessionId: @id)
-    end
+class TestToken < Minitest::Test
+  def setup
+    @id = SecureRandom.hex(5)
+  end
 
-    def teardown
-      OpenVidu::Session.find(@id).delete
-    end
+  def test_class_method_create_calls
+    stub_request(:post, "#{ENV['OPENVIDU_URL']}/api/tokens")
+    params = create_params(session: @id)
+    OpenVidu::Token.create(params)
+    assert_requested(:post, "#{ENV['OPENVIDU_URL']}/api/tokens", times:1)
+  end
 
-    def test_create
-      params = create_params(session: @id)
-      response = OpenVidu::Token.create(params)
+  def test_instance_create_calls
+    stub_request(:post, "#{ENV['OPENVIDU_URL']}/api/tokens")
+    params = create_params(session: @id)
+    OpenVidu::Token.new(params).create
+    assert_requested(:post, "#{ENV['OPENVIDU_URL']}/api/tokens", times:1)
+  end
 
-      refute response.nil?
-      # refute response&.sessionId&.nil?
-      # assert response.sessionId.eql?(id)
-    end
-
-    def test_instance_create
-      params = create_params(session: @id)
-      response = OpenVidu::Token.new(params).create
-
-      refute response.nil?
-      # refute response&.sessionId&.nil?
-      # assert response.sessionId.eql?(id)
-    end
-
-    private
-
-    def create_params(params = {})
-      {
+  def create_params(params = {})
+    {
         session: 'ID',
         role: 'PUBLISHER',
         data: 'metadata',
         kurentoOptions: nil
-      }.merge(params)
-    end
+    }.merge(params)
   end
 end

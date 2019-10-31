@@ -3,12 +3,9 @@ module OpenVidu
   class Responder
     attr_reader :object, :response
 
-    def initialize(object, response)
+    def execute(object, response)
       @object = object
       @response = response
-    end
-
-    def execute
       klass = Object.const_get(klass_name)
 
       return true if record_destroyed?
