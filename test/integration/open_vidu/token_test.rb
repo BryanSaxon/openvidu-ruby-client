@@ -6,17 +6,17 @@ module OpenVidu
     def setup
       WebMock.disable!
       @id = SecureRandom.hex(5)
-      OpenVidu::Session.create(customSessionId: @id)
+      OpenVidu::Session.new(server, customSessionId: @id).create
     end
 
     def teardown
-      OpenVidu::Session.find(@id).delete
+      OpenVidu::Session.new(server).find(@id).delete
       WebMock.enable!
     end
 
     def test_create
       params = create_params(session: @id)
-      response = OpenVidu::Token.create(params)
+      response = OpenVidu::Token.new(server, params).create
 
       refute response.nil?
       assert response.session == @id
@@ -26,7 +26,7 @@ module OpenVidu
 
     def test_instance_create
       params = create_params(session: @id)
-      response = OpenVidu::Token.new(params).create
+      response = OpenVidu::Token.new(server, params).create
 
       refute response.nil?
       assert response.session == @id
@@ -43,6 +43,10 @@ module OpenVidu
         data: 'metadata',
         kurentoOptions: nil
       }.merge(params)
+    end
+
+    def server
+      Addressable::URI.parse('https://127.0.0.1:4443?token=MY_SECRET&verify_peer=false')
     end
   end
 end

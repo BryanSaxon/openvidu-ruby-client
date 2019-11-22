@@ -6,34 +6,33 @@ class TestRecording < Minitest::Test
   end
 
   def test_get_all
-    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/recordings")
-    OpenVidu::Recording.all
-    assert_requested(:get, "#{ENV['OPENVIDU_URL']}/api/recordings", times: 1)
+    stub_request(:get, "https://#{server.host_and_port}/api/recordings")
+    OpenVidu::Recording.new(server).all
+    assert_requested(:get, "https://#{server.host_and_port}/api/recordings", times: 1)
   end
 
   def test_create
-    stub_request(:post, "#{ENV['OPENVIDU_URL']}/api/recordings/start")
-    OpenVidu::Recording.create(create_params)
-    OpenVidu::Recording.new(create_params).create
-    assert_requested(:post, "#{ENV['OPENVIDU_URL']}/api/recordings/start", times: 2, body: create_params)
+    stub_request(:post, "https://#{server.host_and_port}/api/recordings/start")
+    OpenVidu::Recording.new(server, create_params).create
+    assert_requested(:post, "https://#{server.host_and_port}/api/recordings/start", times: 1, body: create_params)
   end
 
   def test_find
-    stub_request(:get, "#{ENV['OPENVIDU_URL']}/api/recordings/test_id")
-    OpenVidu::Recording.find("test_id")
-    assert_requested(:get, "#{ENV['OPENVIDU_URL']}/api/recordings/test_id")
+    stub_request(:get, "https://#{server.host_and_port}/api/recordings/test_id")
+    OpenVidu::Recording.new(server).find("test_id")
+    assert_requested(:get, "https://#{server.host_and_port}/api/recordings/test_id")
   end
 
   def test_stop
-    stub_request(:post, "#{ENV['OPENVIDU_URL']}/api/recordings/stop/ID")
-    OpenVidu::Recording.new(create_params(id: "ID")).stop
-    assert_requested(:post, "#{ENV['OPENVIDU_URL']}/api/recordings/stop/ID")
+    stub_request(:post, "https://#{server.host_and_port}/api/recordings/stop/ID")
+    OpenVidu::Recording.new(server, create_params(id: "ID")).stop
+    assert_requested(:post, "https://#{server.host_and_port}/api/recordings/stop/ID")
   end
 
   def test_delete
-    stub_request(:delete, "#{ENV['OPENVIDU_URL']}/api/recordings/ID")
-    OpenVidu::Recording.new(create_params(id: "ID")).delete
-    assert_requested(:delete, "#{ENV['OPENVIDU_URL']}/api/recordings/ID")
+    stub_request(:delete, "https://#{server.host_and_port}/api/recordings/ID")
+    OpenVidu::Recording.new(server, create_params(id: "ID")).delete
+    assert_requested(:delete, "https://#{server.host_and_port}/api/recordings/ID")
   end
 
   def create_params(params = {})
@@ -47,5 +46,9 @@ class TestRecording < Minitest::Test
         recordingLayout: '',
         customLayout: '',
     }.merge(params)
+  end
+
+  def server
+    OpenVidu::Server.new('https://127.0.0.1:4443?token=MY_SECRET&verify_peer=false')
   end
 end

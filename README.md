@@ -29,23 +29,18 @@ docker run -p 4443:4443 -d --rm -e openvidu.secret=MY_SECRET -e openvidu.recordi
 
 Set the following environment variables in your Ruby application:
 
-```bash
-OPENVIDU_URL = 'https://localhost:4443'
-OPENVIDU_USERNAME = 'OPENVIDUAPP'
-OPENVIDU_PASSWORD = 'MY_SECRET'
-OPENVIDU_VERIFY_PEER=false
-```
-
 To start a OpenVidu session:
 
 ```ruby
-OpenVidu::Session.create(
+server = 'https://127.0.0.1:4443?token=MY_SECRET'
+
+OpenVidu::Session.new(server,
   customSessionId: 'your-custom-session-id',
   defaultOutputMode: 'INDIVIDUAL',
-  recordingMode: 'ALWAYS')
+  recordingMode: 'ALWAYS').create
 
 # Create a token to publish video
-token = OpenVidu::Token.create(session: 'your-custom-session-id,
+token = OpenVidu::Token.new(server, session: 'your-custom-session-id,
   role: "PUBLISHER",
   data: {
     "full_name": "John Smith"  # Custom data can be supplied here

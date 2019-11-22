@@ -12,8 +12,8 @@ module OpenVidu
     ].freeze
     ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
-    def self.config
-      OpenVidu::Command.new(:config, :get, 'config').execute
+    def config
+      OpenVidu::Command.new(:config, :get, 'config', { options: {server: server } }).execute
     end
   end
 end

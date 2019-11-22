@@ -12,7 +12,7 @@ module OpenVidu
     end
 
     def test_all
-      response = OpenVidu::Recording.all
+      response = OpenVidu::Recording.new(server).all
 
       refute response.nil?
       assert response.is_a?(Array)
@@ -39,6 +39,10 @@ module OpenVidu
         recordingLayout: '',
         customLayout: ''
       }.merge(params)
+    end
+
+    def server
+      Addressable::URI.parse('https://127.0.0.1:4443?token=MY_SECRET&verify_peer=false')
     end
   end
 end
