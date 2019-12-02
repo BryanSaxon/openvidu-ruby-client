@@ -14,19 +14,19 @@ module OpenVidu
       'items'
     end
 
-    def self.all
+    def all
       OpenVidu::Command.new(
-        :recording, :get, 'api/recordings'
+        :recording,
+        :get,
+        'api/recordings',
+        { options: { server: server } }
       ).execute
     end
 
-    def self.create(params)
-      new(params).create
-    end
-
-    def self.find(id)
+    def find(id)
       OpenVidu::Command.new(
-        :recording, :get, "api/recordings/#{id}"
+        :recording, :get, "api/recordings/#{id}",
+        { options: { server: server } }
       ).execute
     end
 
@@ -34,7 +34,8 @@ module OpenVidu
       OpenVidu::Command.new(
         :recording,
         :post,
-        "api/recordings/stop/#{id}"
+        "api/recordings/stop/#{id}",
+        { options: { server: server } }
       ).execute
     end
 
@@ -42,13 +43,18 @@ module OpenVidu
       OpenVidu::Command.new(
         :recording,
         :delete,
-        "api/recordings/#{id}"
+        "api/recordings/#{id}",
+        { options: { server: server } }
       ).execute
     end
 
     def create
       OpenVidu::Command.new(
-        :recording, :post, 'api/recordings/start', create_params
+        :recording,
+        :post,
+        'api/recordings/start',
+        create_params,
+        { options: { server: server } }
       ).execute
     end
 

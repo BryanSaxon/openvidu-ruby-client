@@ -5,7 +5,7 @@ require 'open_vidu/exceptions'
 module OpenVidu
   # Command
   class Command
-    attr_reader :object, :method, :endpoint, :params, :requestor, :responder
+    attr_reader :object, :method, :endpoint, :params, :requestor, :responder, :server
 
     def initialize(object, method, endpoint, params = {}, options: {})
       @object = object
@@ -13,14 +13,15 @@ module OpenVidu
       @endpoint = endpoint
       @params = params
 
-      @requestor = options[:requestor] || OpenVidu::Requestor.new(method, endpoint, params)
+      @server = options.fetch(:server)
+      @requestor = options[:requestor] || OpenVidu::Requestor.new(server, method, endpoint, params)
       @responder = options[:responder] || OpenVidu::Responder.new
     end
 
     def execute
       response = requestor.execute
       raise OpenVidu::ResponseError.new(response) unless valid?(response)
-      responder.execute(object, response.parsed_response)
+      responder.execute(server, object, response.parsed_response)
     end
 
     private

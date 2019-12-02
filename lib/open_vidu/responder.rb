@@ -3,16 +3,16 @@ module OpenVidu
   class Responder
     attr_reader :object, :response
 
-    def execute(object, response)
+    def execute(server, object, response)
       @object = object
       @response = response
       klass = Object.const_get(klass_name)
 
       return true if record_destroyed?
-      return klass.new(mapped_params(response)) if complete_record?
-      return klass.find(response['id']) if record_lookup?
+      return klass.new(server, mapped_params(response)) if complete_record?
+      return klass.new(server).find(response['id']) if record_lookup?
 
-      response[content_key].map { |hash| klass.new(mapped_params(hash)) }
+      response[content_key].map { |hash| klass.new(server, mapped_params(hash)) }
     end
 
     private

@@ -5,13 +5,9 @@ module OpenVidu
     GENERATED_PARAMS = %w[id token].freeze
     ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
-    def self.create(params)
-      new(params).create
-    end
-
     def create
       OpenVidu::Command.new(
-        :token, :post, 'api/tokens', create_params
+        :token, :post, 'api/tokens', create_params, options: { server: server }
       ).execute
     end
   end

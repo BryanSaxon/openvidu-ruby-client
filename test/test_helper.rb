@@ -4,7 +4,6 @@ SimpleCov.start do
   add_filter "/test/"
 end
 
-require 'dotenv/load'
 require 'open_vidu'
 require 'open_vidu/base'
 require 'open_vidu/command'

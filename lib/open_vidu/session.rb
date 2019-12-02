@@ -8,26 +8,22 @@ module OpenVidu
     GENERATED_PARAMS = %w[sessionId createdAt connections recording].freeze
     ALL_PARAMS = (ASSIGNABLE_PARAMS + GENERATED_PARAMS).freeze
 
-    def self.all
+    def all
       OpenVidu::Command.new(
-        :session, :get, 'api/sessions'
+        :session, :get, 'api/sessions', { options: { server: server } }
       ).execute
     end
 
-    def self.create(params)
-      new(params).create
-    end
-
-    def self.find(id)
+    def find(id)
       OpenVidu::Command.new(
-        :session, :get, "api/sessions/#{id}"
+        :session, :get, "api/sessions/#{id}", { options: { server: server } }
       ).execute
     end
 
-    def self.exists?(id)
+    def exists?(id)
       begin
         OpenVidu::Command.new(
-            :session, :get, "api/sessions/#{id}"
+          :session, :get, "api/sessions/#{id}", { options: { server: server } }
         ).execute
         true
       rescue OpenVidu::ResponseError => e
@@ -38,13 +34,13 @@ module OpenVidu
 
     def create
       OpenVidu::Command.new(
-        :session, :post, 'api/sessions', create_params
+        :session, :post, 'api/sessions', create_params, { options: { server: server } }
       ).execute
     end
 
     def delete
       OpenVidu::Command.new(
-        :session, :delete, "api/sessions/#{customSessionId}"
+        :session, :delete, "api/sessions/#{customSessionId}", { options: { server: server } }
       ).execute
     end
   end

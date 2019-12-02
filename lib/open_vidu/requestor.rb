@@ -4,13 +4,10 @@ require 'json'
 module OpenVidu
   # Requestor
   class Requestor
-    attr_reader :method, :endpoint, :params
+    attr_reader :server, :method, :endpoint, :params
 
-    BASE_URL = ENV['OPENVIDU_URL']
-    TOKEN = "#{ENV['OPENVIDU_USERNAME']}:#{ENV['OPENVIDU_PASSWORD']}".freeze
-    VERIFY_PEER = ENV['OPENVIDU_VERIFY_PEER']
-
-    def initialize(method, endpoint, params = {})
+    def initialize(server, method, endpoint, params = {})
+      @server = server
       @method = method
       @endpoint = endpoint
       @params = params
@@ -23,16 +20,16 @@ module OpenVidu
     private
 
     def url
-      "#{BASE_URL}/#{endpoint}"
+      "#{server.scheme}://#{server.host}:#{server.port || 4443}/#{endpoint}"
     end
 
     def options
       {
         headers: {
-          'Authorization' => "Basic #{Base64.strict_encode64(TOKEN)}",
+          'Authorization' => "Basic #{Base64.strict_encode64(server.token)}",
           'Content-Type' => 'application/json'
         },
-        verify: VERIFY_PEER != 'false',
+        verify: server.verify_peer?,
         body: params.to_json
       }
     end
