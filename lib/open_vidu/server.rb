@@ -8,6 +8,8 @@ module OpenVidu
 
     InvalidURI = Class.new(StandardError)
 
+    DEFAULT_TIMEOUT = 10 # seconds
+
     def_delegators :@uri, :host, :port, :scheme, :query_values, :to_s
 
     # `uri` should take the form of scheme://some-openvidu-host-or-ip:port?token=<your-secret-here>
@@ -29,6 +31,14 @@ module OpenVidu
       return false if query_values['verify_peer'].to_s.downcase == 'false'
 
       true
+    end
+
+    def timeout
+      if query_values['timeout'].to_i > 0
+        query_values['timeout'].to_i
+      else
+        DEFAULT_TIMEOUT
+      end
     end
 
     def ==(other)

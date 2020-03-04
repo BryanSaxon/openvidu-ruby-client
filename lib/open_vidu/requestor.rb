@@ -30,6 +30,7 @@ module OpenVidu
           'Content-Type' => 'application/json'
         },
         verify: server.verify_peer?,
+        timeout: server.timeout,
         body: params.to_json
       }
     end

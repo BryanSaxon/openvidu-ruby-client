@@ -32,7 +32,7 @@ Set the following environment variables in your Ruby application:
 To start a OpenVidu session:
 
 ```ruby
-server = 'https://127.0.0.1:4443?token=MY_SECRET'
+server = 'https://127.0.0.1:4443?token=MY_SECRET&timeout=5'
 
 OpenVidu::Session.new(server,
   customSessionId: 'your-custom-session-id',
